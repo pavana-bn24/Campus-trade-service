@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MALNAD Campus Hub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1a237e;
+            --secondary-blue: #303f9f;
+            --accent-blue: #3949ab;
+            --light-blue: #e8eaf6;
+            --dark-gray: #333;
+            --medium-gray: #555;
+            --light-gray: #777;
+            --white: #fff;
+            --off-white: #f5f5f5;
+            --sidebar-width: 240px;
+            --header-height: 60px;
+            --transition-speed: 0.3s;
+            --accent-green: #2e7d32;
+            --accent-orange: #ff6d00;
+            --accent-purple: #6a1b9a;
+            --accent-red: #c62828;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--off-white);
+            color: var(--dark-gray);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background-color: var(--white);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            z-index: 1000;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-toggle {
+            font-size: 1.5rem;
+            margin-right: 20px;
+            cursor: pointer;
+            color: var(--dark-gray);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+            display: flex;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .header-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .search-bar {
+            width: 60%;
+            max-width: 600px;
+            display: flex;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px 0 0 20px;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .search-btn {
+            padding: 8px 15px;
+            background-color: var(--light-blue);
+            border: 1px solid #ddd;
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .header-icon {
+            font-size: 1.3rem;
+            margin-left: 20px;
+            color: var(--dark-gray);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 20px;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            position: fixed;
+            top: var(--header-height);
+            left: 0;
+            width: var(--sidebar-width);
+            height: calc(100vh - var(--header-height));
+            background-color: var(--white);
+            box-shadow: 1px 0 3px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            transition: transform var(--transition-speed) ease;
+            z-index: 999;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-section {
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .sidebar-title {
+            padding: 0 20px 10px;
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            text-transform: uppercase;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--light-blue);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--light-blue);
+            border-left: 3px solid var(--primary-blue);
+        }
+
+        .sidebar-icon {
+            font-size: 1.2rem;
+            margin-right: 15px;
+            color: var(--medium-gray);
+        }
+
+        .sidebar-item.active .sidebar-icon {
+            color: var(--primary-blue);
+        }
+
+        .sidebar-text {
+            font-size: 0.9rem;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--header-height);
+            padding: 20px;
+            transition: margin-left var(--transition-speed) ease;
+        }
+
+        .main-content.expanded {
+            margin-left: 0;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+        }
+
+        .card-text {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            margin-bottom: 15px;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-blue);
+            color: var(--primary-blue);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--light-blue);
+        }
+
+        .price {
+            font-weight: bold;
+            color: var(--primary-blue);
+            font-size: 1.1rem;
+        }
+
+        /* Dashboard Card Styles */
+        .dashboard-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-top: 4px solid var(--primary-blue);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card.marketplace {
+            border-top-color: var(--accent-purple);
+        }
+
+        .dashboard-card.accommodation {
+            border-top-color: var(--accent-orange);
+        }
+
+        .dashboard-card.internship {
+            border-top-color: var(--accent-green);
+        }
+
+        .dashboard-card.library {
+            border-top-color: var(--accent-red);
+        }
+
+        .dashboard-card.events {
+            border-top-color: var(--accent-blue);
+        }
+
+        .dashboard-card.messages {
+            border-top-color: #6a1b9a;
+        }
+
+        .dashboard-card-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .dashboard-card-body {
+            padding: 15px;
+            flex-grow: 1;
+        }
+
+        .dashboard-card-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-card-icon {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+
+        .dashboard-card-text {
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+            margin-bottom: 15px;
+        }
+
+        .dashboard-card-footer {
+            padding: 10px 15px;
+            background-color: var(--light-blue);
+            text-align: center;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        /* Marketplace Styles */
+        .cart-summary {
+            background-color: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .cart-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            background-color: var(--white);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+
+        .cart-item-details {
+            flex: 1;
+        }
+
+        .cart-item-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .cart-item-price {
+            color: var(--primary-blue);
+            font-weight: bold;
+        }
+
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            background-color: var(--light-blue);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            margin: 0 5px;
+        }
+
+        .remove-btn {
+            color: var(--light-gray);
+            cursor: pointer;
+        }
+
+        .cart-total {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        /* Chatbot Styles */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 15px;
+            background-color: var(--primary-blue);
+            color: white;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+        }
+
+        .bot-message {
+            align-self: flex-start;
+            background-color: var(--light-blue);
+            padding: 10px 15px;
+            border-radius: 18px 18px 18px 0;
+        }
+
+        .user-message {
+            align-self: flex-end;
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 18px 18px 0 18px;
+            margin-left: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 20px 0 0 20px;
+            outline: none;
+        }
+
+        .chat-input button {
+            padding: 10px 15px;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+        }
+
+        /* Login Page Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - var(--header-height));
+            background-color: var(--light-blue);
+        }
+
+        .login-box {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--medium-gray);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .login-btn:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        .login-footer {
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .login-footer a {
+            color: var(--primary-blue);
+            text-decoration: none;
+        }
+
+        /* Register Page Styles */
+        .register-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: calc(100vh - var(--header-height));
+            background-color: var(--light-blue);
+        }
+
+        .register-box {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .register-title {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--primary-blue);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row .input-group {
+            flex: 1;
+        }
+
+        /* PG & Accommodation Section Styles */
+        .accommodation-card {
+            background-color: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            border-top: 4px solid var(--accent-green);
+        }
+
+        .accommodation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .accommodation-card.pg {
+            border-top-color: var(--accent-orange);
+        }
+
+        .accommodation-card.hostel {
+            border-top-color: var(--accent-purple);
+        }
+
+        .accommodation-card.mess {
+            border-top-color: var(--accent-red);
+        }
+
+        .accommodation-card.map {
+            border-top-color: var(--primary-blue);
+        }
+
+        .accommodation-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .accommodation-body {
+            padding: 15px;
+        }
+
+        .accommodation-title {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+        }
+
+        .accommodation-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feature-tag {
+            background-color: var(--light-blue);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--primary-blue);
+        }
+
+        .feature-tag.pg {
+            background-color: #ffe0b2;
+            color: var(--accent-orange);
+        }
+
+        .feature-tag.hostel {
+            background-color: #e1bee7;
+            color: var(--accent-purple);
+        }
+
+        .feature-tag.mess {
+            background-color: #ffcdd2;
+            color: var(--accent-red);
+        }
+
+        .accommodation-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .distance-badge {
+            background-color: var(--accent-green);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .map-container {
+            height: 400px;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .map-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .directions-list {
+            margin-top: 20px;
+        }
+
+        .direction-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .direction-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+        }
+
+        .transport-icon {
+            margin-right: 10px;
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .search-bar {
+                width: 80%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-center {
+                display: none;
+            }
+            
+            .card-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+
+            .cart-item {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .cart-item-img {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .cart-item-actions {
+                margin-top: 10px;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .header-right .header-icon:not(:last-child) {
+                display: none;
+            }
+            
+            .register-container .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .chat-container {
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <div class="menu-toggle" id="menuToggle">
+                <i class="fas fa-bars"></i>
+            </div>
+            <a href="#" class="logo">
+                <img src="https://th.bing.com/th/id/OIP.6n9AleFAFQjdUK0YWpUVNwAAAA?rs=1&pid=ImgDetMain" alt="MALNAD Logo">
+                MALNAD
+            </a>
+        </div>
+        
+        <div class="header-center">
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+        </div>
+        
+        <div class="header-right">
+            <div class="header-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="header-icon"><i class="fas fa-bell"></i></div>
+            <div class="user-avatar" id="userAvatar">U</div>
+        </div>
+    </header>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-item active" data-section="dashboard">
+                <i class="fas fa-home sidebar-icon"></i>
+                <span class="sidebar-text">Dashboard</span>
+            </div>
+            <div class="sidebar-item" data-section="marketplace">
+                <i class="fas fa-store sidebar-icon"></i>
+                <span class="sidebar-text">Marketplace</span>
+            </div>
+            <div class="sidebar-item" data-section="accommodation">
+                <i class="fas fa-bed sidebar-icon"></i>
+                <span class="sidebar-text">PGs & Accommodation</span>
+            </div>
+            <div class="sidebar-item" data-section="internship">
+                <i class="fas fa-briefcase sidebar-icon"></i>
+                <span class="sidebar-text">Internship</span>
+            </div>
+            <div class="sidebar-item" data-section="messages">
+                <i class="fas fa-envelope sidebar-icon"></i>
+                <span class="sidebar-text">Messages</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-title">Academic</div>
+            <div class="sidebar-item" data-section="library">
+                <i class="fas fa-book sidebar-icon"></i>
+                <span class="sidebar-text">Library</span>
+            </div>
+            <div class="sidebar-item" data-section="seminars">
+                <i class="fas fa-chalkboard-teacher sidebar-icon"></i>
+                <span class="sidebar-text">Seminars</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-title">Support</div>
+            <div class="sidebar-item" data-section="events">
+                <i class="fas fa-calendar-alt sidebar-icon"></i>
+                <span class="sidebar-text">Events</span>
+            </div>
+            <div class="sidebar-item" data-section="study-abroad">
+                <i class="fas fa-plane-departure"></i>
+                <span class="sidebar-text">Study-Abroad</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-item" id="loginBtn">
+                <i class="fas fa-sign-in-alt sidebar-icon"></i>
+                <span class="sidebar-text">Login</span>
+            </div>
+            <div class="sidebar-item" id="registerBtn">
+                <i class="fas fa-user-plus sidebar-icon"></i>
+                <span class="sidebar-text">Register</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <!-- Dashboard Section -->
+        <div class="content-section active" id="dashboard">
+            <h1 class="section-title">Dashboard</h1>
+            
+            <div class="card-grid">
+                <div class="dashboard-card marketplace" data-section="marketplace">
+                    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="dashboard-card-img" alt="Marketplace">
+                    <div class="dashboard-card-body">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-store dashboard-card-icon"></i>
+                            Campus Marketplace
+                        </h3>
+                        <p class="dashboard-card-text">Buy and sell textbooks, electronics, and other items with fellow students in a safe environment.</p>
+                    </div>
+                    <div class="dashboard-card-footer">
+                        Explore Marketplace
+                    </div>
+                </div>
+                
+                <div class="dashboard-card accommodation" data-section="accommodation">
+                    <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" class="dashboard-card-img" alt="Accommodation">
+                    <div class="dashboard-card-body">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-bed dashboard-card-icon"></i>
+                            PGs & Accommodation
+                        </h3>
+                        <p class="dashboard-card-text">Find verified PG accommodations, hostels, and mess facilities near the campus.</p>
+                    </div>
+                    <div class="dashboard-card-footer">
+                        Find Accommodation
+                    </div>
+                </div>
+                
+                <div class="dashboard-card internship" data-section="internship">
+                    <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="dashboard-card-img" alt="Internship">
+                    <div class="dashboard-card-body">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-briefcase dashboard-card-icon"></i>
+                            Internship Opportunities
+                        </h3>
+                        <p class="dashboard-card-text">Browse and apply for internships with top companies and research opportunities.</p>
+                    </div>
+                    <div class="dashboard-card-footer">
+                        View Internships
+                    </div>
+                </div>
+                
+                <div class="dashboard-card library" data-section="library">
+                    <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1476&q=80" class="dashboard-card-img" alt="Library">
+                    <div class="dashboard-card-body">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-book dashboard-card-icon"></i>
+                            Library Resources
+                        </h3>
+                        <p class="dashboard-card-text">Access digital resources, book catalog, and reserve study spaces in the college library.</p>
+                    </div>
+                    <div class="dashboard-card-footer">
+                        Visit Library
+                    </div>
+                </div>
+                
+                <div class="dashboard-card events" data-section="events">
+                    <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="dashboard-card-img" alt="Events">
+                    <div class="dashboard-card-body">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-calendar-alt dashboard-card-icon"></i>
+                            Campus Events
+                        </h3>
+                        <p class="dashboard-card-text">Stay updated with upcoming seminars, workshops, cultural fests, and sports events.</p>
+                    </div>
+                    <div class="dashboard-card-footer">
+                        View Events
+                    </div>
+                </div>
+                
+                <div class="dashboard-card messages" data-section="messages">
+                    <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="dashboard-card-img" alt="Messages">
+                    <div class="dashboard-card-body">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-envelope dashboard-card-icon"></i>
+                            Campus Chat
+                        </h3>
+                        <p class="dashboard-card-text">Connect with peers, faculty, and get quick answers from our virtual assistant.</p>
+                    </div>
+                    <div class="dashboard-card-footer">
+                        Start Chatting
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+       <!-- Campus Marketplace Section -->
+<div class="content-section" id="marketplace">
+  <h1 class="section-title">Campus Marketplace</h1>
+
+  <div class="card-grid">
+    <!-- Engineering Textbook -->
+    <div class="card" data-title="Engineering Mathematics Textbook" data-price="450">
+      <img src="https://m.media-amazon.com/images/I/5102f8trNKL._UF1000,1000_QL80_DpWeblab_.jpg" class="card-img" alt="Textbook">
+      <div class="card-body">
+        <h3 class="card-title">Engineering Mathematics Textbook</h3>
+        <p class="card-text">Used but in excellent condition. Latest edition with all chapters intact.</p>
+      </div>
+      <div class="card-footer">
+        <span class="price">₹450</span>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+    <!-- Lab Coat -->
+    <div class="card" data-title="Lab Coat" data-price="300">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRMd-DuIZ-bNSAQYXixBsKGH4zMoxtM7Vw1iA&s" class="card-img" alt="Lab Coat">
+      <div class="card-body">
+        <h3 class="card-title">Lab Coat(Any Branch)</h3>
+        <p class="card-text">White lab coat, size M. Barely used, clean and ironed.Perfect for any labs.</p>
+      </div>
+      <div class="card-footer">
+        <span class="price">₹300</span>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+    <!-- Drawing Instruments Set -->
+    <div class="card" data-title="Engineering Drawing Instruments Set" data-price="250">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5pqjPPwDf8HkcDY5nC2bQEWFMoIvwrXNJpw&s" class="card-img" alt="Drawing Set">
+      <div class="card-body">
+        <h3 class="card-title">Engineering Drawing Instruments Set</h3>
+        <p class="card-text">Complete set including compass, ruler, divider, etc. Lightly used.</p>
+      </div>
+      <div class="card-footer">
+        <span class="price">₹250</span>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+     <div class="card" data-title="Used Laptop (i5, 8GB RAM)" data-price="18500">
+      <img src="https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=1632&q=80" class="card-img" alt="Laptop">
+      <div class="card-body">
+        <h3 class="card-title">Used Laptop (i5, 8GB RAM)</h3>
+        <p class="card-text">Good condition, 2 years old. Perfect for college projects.</p>
+      </div>
+      <div class="card-footer">
+        <span class="price">₹18,500</span>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+
+    <div class="card" data-title="Scientific Calculator" data-price="1200">
+      <img src="https://5.imimg.com/data5/GP/AL/MY-4558736/calculators-2.jpg" class="card-img" alt="Calculator">
+      <div class="card-body">
+        <h3 class="card-title">Scientific Calculator</h3>
+        <p class="card-text">Casio fx-991EX, like new condition with original box.</p>
+      </div>
+      <div class="card-footer">
+        <span class="price">₹900</span>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+    <div class="card" data-title="Used Fan" data-price="900">
+      <img src="https://jamesandco.in/wp-content/uploads/2024/09/41yY6pTdNGL._SL1443.jpg" class="card-img" alt="Fan">
+      <div class="card-body">
+        <h3 class="card-title">Used Fan</h3>
+        <p class="card-text">Working condition. Slightly noisy but efficient cooling.</p>
+      </div>
+      <div class="card-footer">
+        <span class="price">₹900</span>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+    <div class="card" data-title="Power Bank 20000mAh" data-price="1500">
+      <img src="https://cdn.shopify.com/s/files/1/0666/4870/3294/files/power721_Banne-1.webp?v=1721110928" class="card-img" alt="Power Bank">
+      <div class="card-body">
+        <h3 class="card-title">Power Bank 20000mAh</h3>
+        <p class="card-text">Fast charging support, brand new, sealed pack.</p>
+      </div>
+      <div class="card-footer">
+        <span class="price">₹1,500</span>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+
+    
+
+    <!-- Speaker -->
+    <div class="card" data-title="Bluetooth Speaker" data-price="800">
+      <img src="https://images-cdn.ubuy.co.in/64f71c61138f4e7cf9789e90-sony-extra-bass-portable-bluetooth.jpg" class="card-img" alt="Speaker">
+      <div class="card-body">
+        <h3 class="card-title">Bluetooth Speaker</h3>
+        <p class="card-text">Compact size, great bass. Barely used.</p>
+      </div>
+      <div class="card-footer">
+        <span class="price">₹800</span>
+        <button class="btn add-to-cart">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Floating Cart (scoped inside #marketplace) -->
+  <div id="mp-floatingCart">
+    <div><strong>Cart Items:</strong> <span id="mp-cartCount">0</span></div>
+    <div><strong>Total:</strong> ₹<span id="mp-cartTotal">0</span></div>
+    <button class="btn" onclick="mpShowBill()">Checkout</button>
+  </div>
+
+  <!-- Bill Modal (scoped inside #marketplace) -->
+  <div id="mp-billModal">
+    <div id="mp-billModalContent">
+      <h2>🧾 Bill Summary</h2>
+      <div id="mp-billContent"></div>
+      <button class="btn" onclick="mpConfirmOrder()">Order</button>
+    </div>
+  </div>
+
+  <!-- Confirmation Popup (scoped inside #marketplace) -->
+  <div id="mp-confirmationPopup">
+    <div class="mp-popup-content">
+      <p>🎉 Order Confirmed! Thank you for your purchase.</p>
+    </div>
+  </div>
+</div>
+
+<style>
+  #marketplace .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+  }
+
+  #marketplace .card {
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+
+  #marketplace .card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+  }
+
+  #marketplace .card-body {
+    padding: 10px;
+  }
+
+  #marketplace .card-footer {
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #marketplace .btn {
+    background: #0044cc;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  #marketplace .btn:hover {
+    background: #002f80;
+  }
+
+  #mp-floatingCart {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    background: #f9f9f9;
+    padding: 12px 16px;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+
+  #mp-billModal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1500;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #mp-billModalContent {
+    background: white;
+    padding: 24px;
+    border-radius: 12px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  }
+
+  #mp-billContent table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  #mp-billContent th, #mp-billContent td {
+    padding: 6px 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+
+  #mp-confirmationPopup {
+    display: none;
+    position: fixed;
+    z-index: 1600;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mp-popup-content {
+    background: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    font-size: 18px;
+    animation: fadeInZoom 0.5s ease;
+  }
+
+  @keyframes fadeInZoom {
+    from { opacity: 0; transform: scale(0.8); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
+
+<script>
+  const mpCart = [];
+  const mpCartCountEl = document.getElementById('mp-cartCount');
+  const mpCartTotalEl = document.getElementById('mp-cartTotal');
+  const mpBillContent = document.getElementById('mp-billContent');
+  const mpBillModal = document.getElementById('mp-billModal');
+  const mpConfirmationPopup = document.getElementById('mp-confirmationPopup');
+
+  document.querySelectorAll('#marketplace .add-to-cart').forEach(button => {
+    button.addEventListener('click', () => {
+      const card = button.closest('.card');
+      const title = card.dataset.title;
+      const price = parseInt(card.dataset.price);
+
+      const existing = mpCart.find(item => item.title === title);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        mpCart.push({ title, price, quantity: 1 });
+        const footer = button.parentElement;
+        footer.innerHTML = `
+          <span class="price">₹${price}</span>
+          <div class="qty-controls">
+            <button class="btn" onclick="mpChangeQty('${title}', -1)">−</button>
+            <span id="qty-${title}">1</span>
+            <button class="btn" onclick="mpChangeQty('${title}', 1)">+</button>
+          </div>
+        `;
+      }
+      mpUpdateCartUI();
+    });
+  });
+
+  function mpChangeQty(title, delta) {
+    const item = mpCart.find(i => i.title === title);
+    if (!item) return;
+    item.quantity += delta;
+    if (item.quantity <= 0) {
+      const index = mpCart.indexOf(item);
+      mpCart.splice(index, 1);
+      document.querySelectorAll('#marketplace .card').forEach(card => {
+        if (card.dataset.title === title) {
+          const footer = card.querySelector('.card-footer');
+          footer.innerHTML = `<span class="price">₹${card.dataset.price}</span>
+                              <button class="btn add-to-cart">Add to Cart</button>`;
+          footer.querySelector('.add-to-cart').addEventListener('click', () => {
+            card.querySelector('.add-to-cart').click();
+          });
+        }
+      });
+    } else {
+      document.getElementById(`qty-${title}`).textContent = item.quantity;
+    }
+    mpUpdateCartUI();
+  }
+
+  function mpUpdateCartUI() {
+    let count = 0, total = 0;
+    mpCart.forEach(item => {
+      count += item.quantity;
+      total += item.quantity * item.price;
+    });
+    mpCartCountEl.textContent = count;
+    mpCartTotalEl.textContent = total;
+  }
+
+  function mpShowBill() {
+    if (mpCart.length === 0) return alert("Your cart is empty!");
+    let html = '<table><tr><th>Item</th><th>Qty</th><th>Price</th><th>Total</th></tr>';
+    let grandTotal = 0;
+    mpCart.forEach(item => {
+      const itemTotal = item.price * item.quantity;
+      grandTotal += itemTotal;
+      html += `<tr>
+        <td>${item.title}</td>
+        <td>${item.quantity}</td>
+        <td>₹${item.price}</td>
+        <td>₹${itemTotal}</td>
+      </tr>`;
+    });
+    html += `<tr><td colspan="3"><strong>Grand Total</strong></td><td><strong>₹${grandTotal}</strong></td></tr></table>`;
+    mpBillContent.innerHTML = html;
+    mpBillModal.style.display = 'flex';
+  }
+
+  function mpConfirmOrder() {
+    mpBillModal.style.display = 'none';
+    mpConfirmationPopup.style.display = 'flex';
+    mpCart.length = 0;
+    mpUpdateCartUI();
+    setTimeout(() => {
+      mpConfirmationPopup.style.display = 'none';
+    }, 2500);
+  }
+</script>
+
+    
+     <!-- Accommodation Section (PGs, Rooms, Mess, Directions) -->
+  
+<div class="content-section" id="accommodation">
+  <h1 class="section-title">PGs & Accommodation</h1>
+
+  <div class="card-grid">
+    <!-- Existing PG Accommodation Card -->
+    <div class="accommodation-card pg">
+      <img src="https://images.unsplash.com/photo-1554469384-e58fac16e23a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1374&q=80" class="accommodation-img" alt="PG Accommodation">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Shree Krishna PG for Boys</h3>
+        <p class="card-text">Comfortable and affordable PG accommodation with all basic amenities near college campus.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag pg">AC Rooms</span>
+          <span class="feature-tag pg">WiFi</span>
+          <span class="feature-tag pg">Laundry</span>
+          <span class="feature-tag pg">Food Option</span>
+        </div>
+        <p><strong>Contact:</strong> +91-9876543210<br><strong>Email:</strong> shreekrishnapg@mail.com</p>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹6,500/month</span>
+        <span class="distance-badge">0.8 km from college</span>
+        <button class="btn open-modal-btn"
+                data-pg="Shree Krishna PG for Boys"
+                data-contact="+91-9876543210"
+                data-email="shreekrishnapg@mail.com">Book Now</button>
+      </div>
+    </div>
+
+    <!-- Existing Hostel Card (No Book Now Button) -->
+    <div class="accommodation-card hostel">
+      <img src="https://images.unsplash.com/photo-1580216643062-cf460548a66a?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" class="accommodation-img" alt="Hostel">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Malnad Boys Hostel</h3>
+        <p class="card-text">Official college hostel with strict rules but best for academic focus and campus proximity.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag hostel">Study Room</span>
+          <span class="feature-tag hostel">24/7 Security</span>
+          <span class="feature-tag hostel">Mess Facility</span>
+          <span class="feature-tag hostel">Library Access</span>
+        </div>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹4,800/month</span>
+        <span class="distance-badge">On Campus</span>
+      </div>
+    </div>
+
+    <!-- Existing Mess Card -->
+    <div class="accommodation-card mess">
+      <img src="https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" class="accommodation-img" alt="Mess Food">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Annapoorna Mess</h3>
+        <p class="card-text">Hygeinic and tasty food with both North & South Indian options at reasonable rates.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag mess">Breakfast</span>
+          <span class="feature-tag mess">Lunch</span>
+          <span class="feature-tag mess">Dinner</span>
+          <span class="feature-tag mess">Veg/Non-Veg</span>
+        </div>
+        <p><strong>Contact:</strong> +91-9123456700<br><strong>Email:</strong> annapoorna@mail.com</p>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹2,200/month</span>
+        <span class="distance-badge">0.5 km from college</span>
+        <button class="btn open-modal-btn"
+                data-pg="Annapoorna Mess"
+                data-contact="+91-9123456700"
+                data-email="annapoorna@mail.com">Book Now</button>
+      </div>
+    </div>
+
+    <!-- Additional PG Card with Book Now & Contact -->
+    <div class="accommodation-card pg">
+      <img src="https://images.unsplash.com/photo-1590490350331-5c74522f9c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" class="accommodation-img" alt="PG Accommodation">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Comfort Stay PG</h3>
+        <p class="card-text">Neat and spacious rooms with friendly staff and essential amenities for students.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag pg">WiFi</span>
+          <span class="feature-tag pg">Attached Bath</span>
+          <span class="feature-tag pg">CCTV</span>
+          <span class="feature-tag pg">Meal Plan</span>
+        </div>
+        <p><strong>Contact:</strong> +91-9988776655<br><strong>Email:</strong> comfortstaypg@mail.com</p>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹6,000/month</span>
+        <span class="distance-badge">0.9 km from college</span>
+        <button class="btn open-modal-btn"
+                data-pg="Comfort Stay PG"
+                data-contact="+91-9988776655"
+                data-email="comfortstaypg@mail.com">Book Now</button>
+      </div>
+    </div>
+    <!-- Additional PG Card with Book Now & Contact -->
+    <div class="accommodation-card pg">
+      <img src="https://images.unsplash.com/photo-1590490350331-5c74522f9c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" class="accommodation-img" alt="PG Accommodation">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Comfort Stay PG</h3>
+        <p class="card-text">Neat and spacious rooms with friendly staff and essential amenities for students.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag pg">WiFi</span>
+          <span class="feature-tag pg">Attached Bath</span>
+          <span class="feature-tag pg">CCTV</span>
+          <span class="feature-tag pg">Meal Plan</span>
+        </div>
+        <p><strong>Contact:</strong> +91-9988776655<br><strong>Email:</strong> comfortstaypg@mail.com</p>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹6,000/month</span>
+        <span class="distance-badge">0.9 km from college</span>
+        <button class="btn open-modal-btn"
+                data-pg="Comfort Stay PG"
+                data-contact="+91-9988776655"
+                data-email="comfortstaypg@mail.com">Book Now</button>
+      </div>
+    </div>
+
+    <!-- Additional PG Card with Book Now & Contact -->
+    <div class="accommodation-card pg">
+      <img src="https://images.unsplash.com/photo-1590490350331-5c74522f9c6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" class="accommodation-img" alt="PG Accommodation">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Comfort Stay PG</h3>
+        <p class="card-text">Neat and spacious rooms with friendly staff and essential amenities for students.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag pg">WiFi</span>
+          <span class="feature-tag pg">Attached Bath</span>
+          <span class="feature-tag pg">CCTV</span>
+          <span class="feature-tag pg">Meal Plan</span>
+        </div>
+        <p><strong>Contact:</strong> +91-9988776655<br><strong>Email:</strong> comfortstaypg@mail.com</p>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹6,000/month</span>
+        <span class="distance-badge">0.9 km from college</span>
+        <button class="btn open-modal-btn"
+                data-pg="Comfort Stay PG"
+                data-contact="+91-9988776655"
+                data-email="comfortstaypg@mail.com">Book Now</button>
+      </div>
+    </div>
+
+
+    <!-- Additional Mess Card -->
+    <div class="accommodation-card mess">
+      <img src="https://images.unsplash.com/photo-1598514982311-240cbe306636?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" class="accommodation-img" alt="Mess Food">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Healthy Bites Mess</h3>
+        <p class="card-text">Daily rotating menu with balanced and nutritious meals for students.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag mess">North Indian</span>
+          <span class="feature-tag mess">South Indian</span>
+          <span class="feature-tag mess">Snacks</span>
+          <span class="feature-tag mess">Clean Kitchen</span>
+        </div>
+        <p><strong>Contact:</strong> +91-9123456780<br><strong>Email:</strong> healthybitesmess@gmail.com</p>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹2,300/month</span>
+        <span class="distance-badge">0.6 km from college</span>
+        <button class="btn open-modal-btn"
+                data-pg="Healthy Bites Mess"
+                data-contact="+91-9123456780"
+                data-email="healthybitesmess@gmail.com">Book Now</button>
+      </div>
+    </div>
+
+    <!-- Additional PG Card 1 -->
+    <div class="accommodation-card pg">
+      <img src="https://images.unsplash.com/photo-1600585154602-3b8a188b3b94?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" class="accommodation-img" alt="PG Accommodation">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Sunrise PG for Girls</h3>
+        <p class="card-text">Safe and comfortable PG for girls with 24/7 security and home-cooked meals.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag pg">24/7 Security</span>
+          <span class="feature-tag pg">WiFi</span>
+          <span class="feature-tag pg">Laundry</span>
+          <span class="feature-tag pg">Meal Plan</span>
+        </div>
+        <p><strong>Contact:</strong> +91-9988665544<br><strong>Email:</strong> sunrisepggirls@mail.com</p>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹7,200/month</span>
+        <span class="distance-badge">1.2 km from college</span>
+        <button class="btn open-modal-btn"
+                data-pg="Sunrise PG for Girls"
+                data-contact="+91-9988665544"
+                data-email="sunrisepggirls@mail.com">Book Now</button>
+      </div>
+    </div>
+
+    <!-- Additional PG Card 2 -->
+    <div class="accommodation-card pg">
+      <img src="https://images.unsplash.com/photo-1501183638714-9f3a0f3b33c1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" class="accommodation-img" alt="PG Accommodation">
+      <div class="accommodation-body">
+        <h3 class="accommodation-title">Green Leaf PG</h3>
+        <p class="card-text">Eco-friendly PG with vegetarian meals and a calm environment for study.</p>
+        <div class="accommodation-features">
+          <span class="feature-tag pg">Vegetarian Food</span>
+          <span class="feature-tag pg">WiFi</span>
+          <span class="feature-tag pg">Garden</span>
+          <span class="feature-tag pg">Laundry</span>
+        </div>
+        <p><strong>Contact:</strong> +91-9876001122<br><strong>Email:</strong> greenleafpg@mail.com</p>
+      </div>
+      <div class="accommodation-footer">
+        <span class="price">₹6,800/month</span>
+        <span class="distance-badge">1 km from college</span>
+        <button class="btn open-modal-btn"
+                data-pg="Green Leaf PG"
+                data-contact="+91-9876001122"
+                data-email="greenleafpg@mail.com">Book Now</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div id="bookingModal" class="modal" aria-hidden="true" role="dialog" aria-labelledby="modalTitle" aria-modal="true" style="display:none;">
+  <div class="modal-content">
+    <span class="close-btn" role="button" aria-label="Close modal">&times;</span>
+
+    <!-- Booking info view -->
+    <div id="bookingInfoView">
+      <h2 id="modalTitle">Contact & Booking</h2>
+      <p><strong>Place:</strong> <span id="modalPlace"></span></p>
+      <p><strong>Contact:</strong> <span id="modalContact"></span></p>
+      <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+      <button id="proceedBtn" class="btn">Proceed to Book</button>
+    </div>
+
+    <!-- Booking form view, hidden initially -->
+    <form id="bookingForm" style="display:none; margin-top: 15px;">
+      <h2>Booking Form</h2>
+      <label for="nameInput">Name *</label><br>
+      <input type="text" id="nameInput" name="name" required style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+      <label for="emailInput">Email *</label><br>
+      <input type="email" id="emailInput" name="email" required style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+      <label for="phoneInput">Phone *</label><br>
+      <input type="tel" id="phoneInput" name="phone" required style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+      <label for="dateInput">Check-in Date *</label><br>
+      <input type="date" id="dateInput" name="date" required style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+
+      <label for="messageInput">Additional Message</label><br>
+      <textarea id="messageInput" name="message" rows="3" style="width: 100%; padding: 8px; margin-bottom: 10px;"></textarea><br>
+
+      <button type="submit" class="btn" style="width: 100%;">Submit Booking</button>
+    </form>
+  </div>
+</div>
+
+<style>
+  .btn {
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-weight: 600;
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  .modal {
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    position: relative;
+  }
+  .close-btn {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+  }
+  label {
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  // Open modal on Book Now buttons except Malnad Boys Hostel (no button there)
+  document.querySelectorAll('.open-modal-btn').forEach(button => {
+    button.addEventListener('click', () => {
+      const place = button.dataset.pg;
+      const contact = button.dataset.contact;
+      const email = button.dataset.email;
+      document.getElementById('modalPlace').textContent = place;
+      document.getElementById('modalContact').textContent = contact;
+      document.getElementById('modalEmail').textContent = email;
+
+      // Show booking info view and hide form on open
+      document.getElementById('bookingInfoView').style.display = 'block';
+      document.getElementById('bookingForm').style.display = 'none';
+
+      // Reset form inputs
+      document.getElementById('bookingForm').reset();
+
+      const modal = document.getElementById('bookingModal');
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+    });
+  });
+
+  // Close modal
+  document.querySelector('.close-btn').onclick = () => {
+    const modal = document.getElementById('bookingModal');
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  };
+
+  // Close modal when clicking outside modal content
+  window.onclick = event => {
+    const modal = document.getElementById('bookingModal');
+    if(event.target === modal){
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+    }
+  };
+
+  // Show booking form when clicking Proceed to Book
+  document.getElementById('proceedBtn').addEventListener('click', () => {
+    document.getElementById('bookingInfoView').style.display = 'none';
+    document.getElementById('bookingForm').style.display = 'block';
+  });
+
+  // Handle form submission
+  document.getElementById('bookingForm').addEventListener('submit', e => {
+    e.preventDefault();
+
+    const place = document.getElementById('modalPlace').textContent;
+    const name = document.getElementById('nameInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim();
+    const phone = document.getElementById('phoneInput').value.trim();
+    const date = document.getElementById('dateInput').value;
+    const message = document.getElementById('messageInput').value.trim();
+
+    if(!name || !email || !phone || !date){
+      alert('Please fill all required fields.');
+      return;
+    }
+
+    // You can add actual booking API call here
+
+    alert(`Booking submitted for ${place}!\nName: ${name}\nEmail: ${email}\nPhone: ${phone}\nDate: ${date}\nMessage: ${message || 'N/A'}`);
+
+    // Close modal on submit
+    const modal = document.getElementById('bookingModal');
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+  });
+</script>
+
+
+
+        <!-- Internship Section -->
+<div class="content-section" id="internship">
+    <h1 class="section-title">Internship Opportunities</h1>
+    <div class="card-grid">
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1579389083078-4e7018379f7e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="card-img" alt="Tech Internship">
+            <div class="card-body">
+                <h3 class="card-title">Tech Internships</h3>
+                <p class="card-text">Software development, IT support, and tech-related positions from top companies.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://internshala.com/internships/technology-internship" target="_blank" rel="noopener noreferrer" class="btn-link">
+                    <button class="btn">View Positions</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="card-img" alt="Research">
+            <div class="card-body">
+                <h3 class="card-title">Research Internships</h3>
+                <p class="card-text">Work with faculty on cutting-edge research projects in various engineering disciplines.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.nsf.gov/funding/education.jsp?fund_type=internships" target="_blank" rel="noopener noreferrer" class="btn-link">
+                    <button class="btn">Explore Research</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1521791055366-0d553872125f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1469&q=80" class="card-img" alt="Industry">
+            <div class="card-body">
+                <h3 class="card-title">Industry Partners</h3>
+                <p class="card-text">Internship opportunities with our network of industry partners and alumni companies.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.linkedin.com/jobs/internships/" target="_blank" rel="noopener noreferrer" class="btn-link">
+                    <button class="btn">View Partners</button>
+                </a>
+            </div>
+        </div>
+
+        <div class="card">
+            <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="card-img" alt="International">
+            <div class="card-body">
+                <h3 class="card-title">International Internships</h3>
+                <p class="card-text">Global internship opportunities with our partner universities and companies abroad.</p>
+            </div>
+            <div class="card-footer">
+                <a href="https://www.goabroad.com/intern-abroad/search/internships" target="_blank" rel="noopener noreferrer" class="btn-link">
+                    <button class="btn">Explore Abroad</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+        
+        <!-- Messages Section with Chatbot -->
+        <!-- Campus Chat Section with Chatbot -->
+<style>
+  /* Chat container */
+  .chat-container {
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    font-family: Arial, sans-serif;
+    background: white;
+  }
+
+  /* Chat header */
+  .chat-header {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 16px;
+    font-weight: bold;
+    font-size: 18px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  /* Chat messages area */
+  .chat-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    max-height: 300px;
+    background-color: #f9f9f9;
+  }
+
+  /* Message bubbles */
+  .message {
+    margin: 5px 0;
+    max-width: 70%;
+    padding: 10px 15px;
+    border-radius: 15px;
+    word-wrap: break-word;
+    font-size: 14px;
+  }
+
+  /* Bot message */
+  .bot-message {
+    background-color: #f1f0f0;
+    color: #333;
+    margin-right: auto;
+  }
+
+  /* User message */
+  .user-message {
+    background-color: #007bff;
+    color: white;
+    margin-left: auto;
+  }
+
+  /* Chat input area */
+  .chat-input {
+    display: flex;
+    border-top: 1px solid #ddd;
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .chat-input input[type="text"] {
+    flex-grow: 1;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 14px;
+    outline: none;
+  }
+
+  .chat-input button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease;
+  }
+
+  .chat-input button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Scrollbar for chat messages */
+  .chat-messages::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .chat-messages::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 3px;
+  }
+</style>
+
+<div class="content-section" id="messages">
+  <h1 class="section-title">Campus Chat</h1>
+  <div class="chat-container" role="region" aria-live="polite" aria-label="Campus chat with MALNAD Assistant">
+    <div class="chat-header">
+      MALNAD Assistant
+    </div>
+    <div class="chat-messages" id="chatMessages" aria-atomic="true">
+      <div class="message bot-message">
+        Hello! I'm your MALNAD campus assistant. How can I help you today?
+      </div>
+      <div class="message bot-message">
+        I can provide information about:
+        <ul style="margin-top: 5px; margin-left: 20px;">
+          <li>Academic calendar</li>
+          <li>Campus events</li>
+          <li>Library resources</li>
+          <li>Internship opportunities</li>
+          <li>Study abroad programs</li>
+          <li>Marketplace guidelines</li>
+        </ul>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input type="text" id="userInput" placeholder="Type your message here..." aria-label="Type your message here">
+      <button id="sendMessage" aria-label="Send message">&#9658;</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+    const sendBtn = document.getElementById('sendMessage');
+
+    // Predefined answers
+    const answers = {
+      "academic calendar": "The academic calendar includes all semester start/end dates, holidays, and exam schedules. You can view the full calendar on our official website.",
+      "campus events": "Campus events include seminars, workshops, sports meets, and cultural festivals. Check the events section on the website or notice boards for upcoming activities.",
+      "library resources": "Our library offers physical books, e-books, research journals, and study rooms. You can also access online databases through the library portal.",
+      "internship opportunities": "We have a dedicated internship cell collaborating with top companies. Visit the Internship Opportunities section on our website for the latest openings.",
+      "study abroad programs": "We offer exchange and study abroad programs with partner universities in the US, Europe, and Asia. Talk to the International Office for more details.",
+      "marketplace guidelines": "The campus marketplace allows students to buy/sell items with safety guidelines in place. Please read the marketplace policy on the student portal."
+    };
+
+    // Utility to append message to chat area
+    function appendMessage(text, className) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message ' + className;
+      if(className === 'bot-message' && text.includes('<ul')) {
+        // If bot message contains list, set innerHTML to render list
+        msgDiv.innerHTML = text;
+      } else {
+        msgDiv.textContent = text;
+      }
+      chatMessages.appendChild(msgDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Function to get bot response based on user message
+    function getBotResponse(input) {
+      const cleanedInput = input.trim().toLowerCase();
+      for (const key in answers) {
+        if (cleanedInput.includes(key)) {
+          return answers[key];
+        }
+      }
+      return "Sorry, I don't have information on that topic. Please ask about academic calendar, campus events, library resources, internship opportunities, study abroad programs, or marketplace guidelines.";
+    }
+
+    // Send message handler
+    function sendMessage() {
+      const input = userInput.value.trim();
+      if (!input) return;
+      
+      // Append user message
+      appendMessage(input, 'user-message');
+      userInput.value = '';
+      userInput.focus();
+
+      // Simulate bot typing delay
+      setTimeout(() => {
+        const botReply = getBotResponse(input);
+        appendMessage(botReply, 'bot-message');
+      }, 800);
+    }
+
+    // Event listeners
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  })();
+</script>
+
+        
+        
+        <!-- Library Section -->
+        <div class="content-section" id="library">
+            <h1 class="section-title">College Library</h1>
+            <div class="card-grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1589998059171-988d887df646?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1476&q=80" class="card-img" alt="Library">
+                    <div class="card-body">
+                        <h3 class="card-title">Digital Resources</h3>
+                        <p class="card-text">Access e-books, journals, and research databases online.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn">Browse Resources</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1453&q=80" class="card-img" alt="Books">
+                    <div class="card-body">
+                        <h3 class="card-title">Book Catalog</h3>
+                        <p class="card-text">Search our extensive collection of physical books and materials.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn">Search Catalog</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="card-img" alt="Study">
+                    <div class="card-body">
+                        <h3 class="card-title">Study Spaces</h3>
+                        <p class="card-text">Reserve study rooms and learn about library facilities.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn">View Spaces</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" class="card-img" alt="Study Abroad">
+                    <div class="card-body">
+                        <h3 class="card-title">International Journals</h3>
+                        <p class="card-text">Access to premium international academic journals and publications.</p>
+                    </div>
+                    <div class="card-footer">
+                        <button class="btn">Browse Journals</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Seminars Section -->
+<div class="content-section" id="seminars">
+  <h1 class="section-title">Academic Seminars</h1>
+  <div class="card-grid">
+
+    <!-- Emerging Technologies -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=1470&q=80" class="card-img" alt="Tech Seminar">
+      <div class="card-body">
+        <h3 class="card-title">Emerging Technologies</h3>
+        <p class="card-text">Explore the latest advancements in AI, IoT, and blockchain technologies.</p>
+      </div>
+      <div class="card-footer">
+        <a href="https://www.coursera.org/courses?query=emerging%20technologies" target="_blank" class="btn">Explore Courses</a>
+      </div>
+    </div>
+
+    <!-- Career Preparation -->
+    <div class="card">
+      <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&w=1471&q=80" class="card-img" alt="Career Seminar">
+      <div class="card-body">
+        <h3 class="card-title">Career Preparation</h3>
+        <p class="card-text">Learn resume building, interview skills, and career planning strategies.</p>
+      </div>
+      <div class="card-footer">
+        <a href="https://www.canva.com/resumes/" target="_blank" class="btn">Build Resume</a>
+      </div>
+    </div>
+
+    <style>.btn {
+  text-decoration: none;
+}
+
+#seminars .card-footer .btn {
+  text-decoration: none;
+}
+</style>
+  </div>
+</div>
+
+        
+        <!-- Events Section -->
+        <div class="content-section" id="events">
+            <h1 class="section-title">Campus Events</h1>
+            <div class="card-grid">
+                <div class="card">
+                
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSW3ab7gwVDavxVHzjnJOM987PIjHMgPBIN-w&s" alt="ENIGMA" />
+      <h3>ENIGMA</h3>
+        <p>Annual tech conference with projects and speakers.</p>
+        <button onclick="openTicketModal('ENIGMA', 400)">Book Ticket</button>
+      </div>
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1470&q=80" alt="MALNAD FEST" />
+        <h3>MALNAD FEST</h3>
+        <p>Dance, music, food and cultural exhibitions.</p>
+        <button onclick="openTicketModal('MALNAD FEST', 300)">Book Ticket</button>
+      </div>
+      <div class="card">
+        <img src="https://process.filestackapi.com/Ar1JhJgKrRMCHY5XInB1Iz/resize=width:742,fit:clip/cache=expiry:max/https://cdn.filepicker.io/api/file/1IJeI1ygQWCREGd3qi0v" alt="JAMBOREE" />
+        <h3>JAMBOREE</h3>
+        <p>Inter-department sports competitions and events.</p>
+        <button onclick="openTicketModal('JAMBOREE', 350)">Book Ticket</button>
+      </div>
+      <div class="card">
+        <img src="https://www.meriise.org/images/prag_bg.png" alt="PRAGYATHA" />
+        <h3>PRAGYATHA</h3>
+        <p>Meet top global universities and explore opportunities.</p>
+        <button onclick="openTicketModal('PRAGYATHA', 500)">Book Ticket</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ticket Modal -->
+  <div id="ticketModal">
+    <div class="modal-content">
+      <h3>🎟️ Book Ticket</h3>
+      <form id="ticketForm">
+        <label>Event</label>
+        <input type="text" id="eventName" readonly />
+        <label>Price (₹)</label>
+        <input type="text" id="ticketPrice" readonly />
+        <label>Name</label>
+        <input type="text" id="userName" required />
+        <label>Phone Number</label>
+        <input type="tel" id="userPhone" placeholder="10-digit Indian number" required />
+        <button type="submit">Book Now</button>
+        <div id="bookingMsg"></div>
+        <button class="close-btn" onclick="closeBookingModal()">×</button>
+
+      </form>
+    </div>
+  </div>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    h2 {
+      text-align: center;
+      padding: 20px;
+      color: #333;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+      max-width: 1200px;
+      margin: auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      transition: transform 0.3s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .card h3 {
+      margin: 16px;
+      font-size: 1.2rem;
+      color: #222;
+    }
+    .card p {
+      margin: 0 16px 16px;
+      color: #555;
+    }
+    .card button {
+      margin: 0 16px 16px;
+      padding: 10px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .card button:hover {
+      background: #0056b3;
+    }
+
+    /* Modal Styling */
+    #ticketModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 300px;
+      position: relative;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+    .modal-content h3 {
+      margin-top: 0;
+      text-align: center;
+    }
+    .modal-content form {
+      display: flex;
+      flex-direction: column;
+    }
+    .modal-content label {
+      margin-top: 10px;
+      font-size: 0.9rem;
+      color: #333;
+    }
+    .modal-content input {
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .modal-content button[type="submit"] {
+      margin-top: 15px;
+      background: #28a745;
+    }
+    .modal-content button[type="submit"]:hover {
+      background: #218838;
+    }
+    .modal-content .close-btn {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  background: #eee;
+  color: #333;
+  border: none;
+  border-radius: 50%;
+  font-size: 16px;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  transition:0.2s ease;
+}
+.modal-content .close-btn:hover {
+  background: #ffcccc;
+  color: #900;
+}
+
+
+
+    #bookingMsg {
+      text-align: center;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+<script>
+    function openTicketModal(eventName, price) {
+      document.getElementById('eventName').value = eventName;
+      document.getElementById('ticketPrice').value = price;
+      document.getElementById('bookingMsg').textContent = '';
+      document.getElementById('ticketModal').style.display = 'flex';
+    }
+
+    function closeTicketModal() {
+      document.getElementById('ticketModal').style.display = 'none';
+      document.getElementById('ticketForm').reset();
+    }
+
+    document.getElementById('ticketForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const name = document.getElementById('userName').value.trim();
+      const phone = document.getElementById('userPhone').value.trim();
+      const phoneValid = /^[6-9]\d{9}$/.test(phone);
+      const msg = document.getElementById('bookingMsg');
+
+      if (!phoneValid) {
+        msg.textContent = '❌ Invalid Indian phone number.';
+        msg.style.color = 'red';
+        return;
+      }
+
+      msg.textContent = '✅ Your response has reached the specified club.';
+      msg.style.color = 'green';
+
+      setTimeout(() => {
+        closeTicketModal();
+      }, 2000);
+    });
+  </script>
+
+        
+        
+        <!-- Study Abroad Section -->
+<div class="content-section" id="study-abroad">
+  <h1 class="section-title">Study Abroad</h1>
+
+  <div class="card">
+    <div class="card-body">
+      <h3 class="card-title">Study Abroad Support</h3>
+      <p class="card-text">Get guidance on international applications, visas, and scholarships.</p>
+    </div>
+    <div class="card-footer">
+      <button class="btn" onclick="openAppointmentForm()">Schedule Appointment</button>
+    </div>
+  </div>
+</div>
+
+<!-- Appointment Modal -->
+<div id="appointmentModal" style="display: none; position: fixed; top: 0; left: 0; 
+     width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; justify-content: center; align-items: center;">
+  <div style="background: white; padding: 20px; border-radius: 8px; width: 90%; max-width: 400px; position: relative;">
+    <button onclick="closeAppointmentForm()" 
+            style="position: absolute; top: 8px; right: 10px; background: #eee; border: none; 
+                   border-radius: 50%; width: 25px; height: 25px; font-size: 14px; font-weight: bold; cursor: pointer;">×</button>
+    <h2>Book an Appointment</h2>
+    <form onsubmit="submitAppointment(event)">
+      <label for="name">Full Name:</label><br>
+      <input type="text" id="name" required><br><br>
+
+      <label for="email">Email:</label><br>
+      <input type="email" id="email" required><br><br>
+
+      <label for="phone">Phone (India):</label><br>
+      <input type="tel" id="phone" pattern="[6-9]{1}[0-9]{9}" placeholder="10-digit number" required><br><br>
+
+      <label for="date">Preferred Date:</label><br>
+      <input type="date" id="date" required><br><br>
+
+      <label for="note">Query:</label><br>
+      <textarea id="note" rows="3" required></textarea><br><br>
+
+      <button type="submit" class="btn">Confirm Booking</button>
+    </form>
+    <p id="appointmentMsg" style="color: green; margin-top: 10px;"></p>
+  </div>
+</div>
+
+<script>
+  function openAppointmentForm() {
+    document.getElementById('appointmentModal').style.display = 'flex';
+  }
+
+  function closeAppointmentForm() {
+    document.getElementById('appointmentModal').style.display = 'none';
+    document.getElementById('appointmentMsg').textContent = '';
+  }
+
+  function submitAppointment(event) {
+    event.preventDefault();
+    document.getElementById('appointmentMsg').textContent = '📬 Your response has been sent to the Study Abroad Club.';
+    setTimeout(closeAppointmentForm, 2500);
+  }
+</script>
+
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div id="loginPage">
+            <h1>Login</h1>
+            <input type="email" id="loginEmail" placeholder="Enter your email">
+            <input type="password" id="loginPassword" placeholder="Enter your password">
+            <button onclick="login()">Login</button>
+            <p>Don't have an account? <a href="#" onclick="showRegister()">Register here</a></p>
+        </div>
+
+        <div id="registerPage" style="display: none;">
+            <h1>Register</h1>
+            <input type="text" id="firstName" placeholder="First Name">
+            <input type="text" id="lastName" placeholder="Last Name">
+            <input type="email" id="registerEmail" placeholder="Email">
+            <input type="password" id="registerPassword" placeholder="Password">
+            <input type="password" id="confirmPassword" placeholder="Confirm Password">
+            <button onclick="register()">Register</button>
+            <p>Already have an account? <a href="#" onclick="showLogin()">Login here</a></p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+<script>
+    // DOM Elements
+    const menuToggle = document.getElementById('menuToggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const sidebarItems = document.querySelectorAll('.sidebar-item');
+    const contentSections = document.querySelectorAll('.content-section');
+    const loginBtn = document.getElementById('loginBtn');
+    const registerBtn = document.getElementById('registerBtn');
+    const loginPage = document.getElementById('loginPage');
+    const registerPage = document.getElementById('registerPage');
+    const showRegister = document.getElementById('showRegister');
+    const showLogin = document.getElementById('showLogin');
+    const userAvatar = document.getElementById('userAvatar');
+    const chatMessages = document.getElementById('chatMessages');
+    const userInput = document.getElementById('userInput');
+    const sendMessage = document.getElementById('sendMessage');
+
+    // Toggle sidebar on menu click
+    menuToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded');
+    });
+
+    // Switch between content sections
+    sidebarItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            // Check if clicking on login/register buttons
+            if (item.id === 'loginBtn') {
+                showLoginPage();
+                return;
+            }
+            if (item.id === 'registerBtn') {
+                showRegisterPage();
+                return;
+            }
+
+            // Otherwise handle section switching
+            const sectionId = item.getAttribute('data-section');
+            
+            // Update active state in sidebar
+            sidebarItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            
+            // Show corresponding content section
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+                if (section.id === sectionId) {
+                    section.classList.add('active');
+                }
+            });
+        });
+    });
+
+    // Show login page
+    function showLoginPage() {
+        loginPage.style.display = 'flex';
+        registerPage.style.display = 'none';
+        mainContent.style.display = 'none';
+    }
+
+    // Show register page
+    function showRegisterPage() {
+        registerPage.style.display = 'flex';
+        loginPage.style.display = 'none';
+        mainContent.style.display = 'none';
+    }
+
+    // Show main content (hide login/register pages)
+    function showMainContent() {
+        mainContent.style.display = 'block';
+        loginPage.style.display = 'none';
+        registerPage.style.display = 'none';
+    }
+
+    // Event listeners for login/register navigation
+    loginBtn.addEventListener('click', showLoginPage);
+    registerBtn.addEventListener('click', showRegisterPage);
+    showRegister.addEventListener('click', showRegisterPage);
+    showLogin.addEventListener('click', showLoginPage);
+
+    // User avatar click - for demo purposes just show dashboard
+    userAvatar.addEventListener('click', () => {
+        // In a real app, this might show a user dropdown or profile
+        showMainContent();
+        
+        // Activate dashboard section
+        sidebarItems.forEach(i => i.classList.remove('active'));
+        document.querySelector('.sidebar-item[data-section="dashboard"]').classList.add('active');
+        
+        contentSections.forEach(section => {
+            section.classList.remove('active');
+            if (section.id === 'dashboard') {
+                section.classList.add('active');
+            }
+        });
+    });
+
+    // Simple chatbot functionality
+    sendMessage.addEventListener('click', () => {
+        const message = userInput.value.trim();
+        if (message) {
+            // Add user message
+            addMessage(message, 'user');
+            userInput.value = '';
+            
+            // Simulate bot response after a short delay
+            setTimeout(() => {
+                const botResponse = getBotResponse(message);
+                addMessage(botResponse, 'bot');
+            }, 500);
+        }
+    });
+
+    // Also allow sending message with Enter key
+    userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            sendMessage.click();
+        }
+    });
+
+    // Add a message to the chat
+    function addMessage(text, sender) {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        messageDiv.classList.add(sender === 'user' ? 'user-message' : 'bot-message');
+        messageDiv.textContent = text;
+        chatMessages.appendChild(messageDiv);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Simple bot response logic
+    function getBotResponse(message) {
+        const lowerMsg = message.toLowerCase();
+        
+        if (lowerMsg.includes('hello') || lowerMsg.includes('hi')) {
+            return "Hello! How can I help you today?";
+        } else if (lowerMsg.includes('library')) {
+            return "The college library is open from 8AM to 8PM on weekdays and 9AM to 5PM on Saturdays. You can check our digital resources through the Library section.";
+        } else if (lowerMsg.includes('internship') || lowerMsg.includes('job')) {
+            return "Internship opportunities are listed in the Internship section. You can browse current openings and application deadlines there.";
+        } else if (lowerMsg.includes('event') || lowerMsg.includes('seminar')) {
+            return "Upcoming events and seminars are listed in the Events section. You can register for events directly from there.";
+        } else if (lowerMsg.includes('accommodation') || lowerMsg.includes('pg') || lowerMsg.includes('hostel')) {
+            return "You can find information about PGs, hostels, and mess facilities in the PGs & Accommodation section.";
+        } else if (lowerMsg.includes('marketplace') || lowerMsg.includes('buy') || lowerMsg.includes('sell')) {
+            return "The Marketplace allows students to buy and sell items. Listings are student-verified for safety.";
+        } else {
+            return "I'm not sure I understand. Could you try asking about library hours, internships, events, accommodation, or marketplace?";
+        }
+    }
+
+    // Responsive sidebar handling
+    function handleResponsive() {
+        if (window.innerWidth <= 992) {
+            sidebar.classList.add('collapsed');
+            mainContent.classList.add('expanded');
+        } else {
+            sidebar.classList.remove('collapsed');
+            mainContent.classList.remove('expanded');
+        }
+    }
+
+    // Initial responsive check
+    handleResponsive();
+
+    // Add resize event listener
+    window.addEventListener('resize', handleResponsive);
+</script>
+</body> </html>
