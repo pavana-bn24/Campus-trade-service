@@ -30,4 +30,20 @@
 ---
 
 ## 📁 Project Structure
-
+campus-trade-hub/
+│
+├── client/
+│ ├── index.html
+│ ├── Login.html
+│ ├── marketplace.html
+│ └── mini.html
+│
+├── server/
+│ ├── models/
+│ ├── routes/
+│ ├── config/
+│ └── app.js
+│
+├── .env
+├── package.json
+└── README.md
