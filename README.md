@@ -1,6 +1,6 @@
-# 🎓 Campus Trade Hub Services
+# 🎓 Campus Trade Services
 
-**Campus Trade Hub Services** is a secure, student-only web platform enabling peer-to-peer exchange of goods, academic materials, and services like tutoring and internships. It fosters a safe, collaborative, and student-centered campus ecosystem through verified logins, real-time chat, categorized listings, and moderation tools.
+**Campus Trade Services** is a secure, student-only web platform enabling peer-to-peer exchange of goods, academic materials, and services like tutoring and internships. It fosters a safe, collaborative, and student-centered campus ecosystem through verified logins, real-time chat, categorized listings, and moderation tools.
 
 ---
 
